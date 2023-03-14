@@ -1,0 +1,47 @@
+﻿@page "/myteams"
+
+@using Microsoft.Identity.Web
+@using Microsoft.Graph
+@inject Microsoft.Graph.GraphServiceClient GraphServiceClient
+@inject MicrosoftIdentityConsentAndConditionalAccessHandler ConsentHandler
+<h3>My Teams</h3>
+
+@if (teamwork == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="d-flex flex-row flex-wrap p-2" style="gap:20px">
+        @foreach (var team in teamwork)
+        {
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">@team.DisplayName</h5>                    
+                    <p class="card-text">
+                        @team.Description
+                    </p>
+                    <a href="members/@team.Id" class="card-link">Click here to see the team members</a>
+                </div>
+            </div>
+        }
+    </div>
+    </div>
+   
+}
+
+@code {
+    IUserJoinedTeamsCollectionPage? teamwork;
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+           teamwork = await GraphServiceClient.Me.JoinedTeams.Request().GetAsync();
+        }
+        catch (Exception ex)
+        {
+            ConsentHandler.HandleException(ex);
+        }
+    }
+}

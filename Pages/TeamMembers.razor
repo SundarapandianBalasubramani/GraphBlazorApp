@@ -1,0 +1,40 @@
+﻿@page "/members/{teamId:guid?}"
+@using Microsoft.Identity.Web
+@using Microsoft.Graph
+@inject Microsoft.Graph.GraphServiceClient GraphServiceClient
+@inject MicrosoftIdentityConsentAndConditionalAccessHandler ConsentHandler
+<h3>Members</h3>
+
+@if (members == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="d-flex flex-row flex-wrap p-2" style="gap:20px">
+            @foreach (var member in members)
+            {
+                <User Id="@member.Id" Name="@member.DisplayName"></User>
+              
+            }
+        </div>
+    </div>
+
+}
+@code {
+    [Parameter]
+    public Guid teamId { get; set; }
+    ITeamMembersCollectionPage? members;
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            members = await GraphServiceClient.Teams[teamId.ToString()].Members.Request().GetAsync();
+        }
+        catch (Exception ex)
+        {
+            ConsentHandler.HandleException(ex);
+        }
+    }
+}

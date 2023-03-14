@@ -1,0 +1,20 @@
+﻿<div class="card" style="width: 18rem;">   
+    <div class="card-body">
+        <p class="card-text">
+           @Name
+        </p>
+    </div>
+</div>
+
+@using Microsoft.Identity.Web
+@using Microsoft.Graph
+@inject Microsoft.Graph.GraphServiceClient GraphServiceClient
+@inject MicrosoftIdentityConsentAndConditionalAccessHandler ConsentHandler
+@code {
+  
+    [Parameter]
+    public string Name { get; set; }
+    [Parameter]
+    public string Id { get; set; }
+   
+}
